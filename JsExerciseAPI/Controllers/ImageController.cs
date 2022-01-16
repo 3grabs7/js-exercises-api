@@ -19,9 +19,15 @@ namespace JsExerciseAPI.Controllers
         {
             if (!Enumerable.Range(1, _imageUrls.Length).Contains(id)) return NotFound();
 
+            return Ok(new { url = _imageUrls[(int)id - 1] });
+        }
+
+        [HttpGet("{id}/throttle")]
+        public ActionResult GetImageThrottled(int id)
+        {
             Thread.Sleep(_rnd.Next(2, 10) * 1000);
 
-            return Ok(new { url = _imageUrls[(int)id - 1] });
+            return GetImage(id);
         }
 
 
