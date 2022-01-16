@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JsExerciseAPI.Controllers
 {
@@ -6,13 +6,14 @@ namespace JsExerciseAPI.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-        private string[] _imageUrls = new string[] {
-            "https://img-9gag-fun.9cache.com/photo/a3Q5VW5_460s.jpg",
-            "https://media.moddb.com/images/members/5/4550/4549205/duck.jpg",
-            "https://www.kibrispdr.org/dwn/5/random-pic.jpg"
-        };
-
+    private readonly ImageService _imageService;
         private Random _rnd = new();
+
+    public ImageController(ImageService imageService)
+    {
+        _imageService = imageService;
+    }
+
 
         [HttpGet("{id}")]
         public ActionResult GetImage(int id)
