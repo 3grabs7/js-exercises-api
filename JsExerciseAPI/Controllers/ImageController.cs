@@ -17,11 +17,11 @@ namespace JsExerciseAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult GetImage(int id)
         {
-            if (!Enumerable.Range(0, _imageUrls.Length).Contains(id)) return NotFound();
+            if (!Enumerable.Range(1, _imageUrls.Length).Contains(id)) return NotFound();
 
             Thread.Sleep(_rnd.Next(2, 10) * 1000);
 
-            return Ok(new { url = _imageUrls[(int)id] });
+            return Ok(new { url = _imageUrls[(int)id - 1] });
         }
 
 
