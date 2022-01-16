@@ -1,13 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿namespace JsExerciseAPI.Controllers;
 
-namespace JsExerciseAPI.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class ImageController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ImageController : ControllerBase
-    {
     private readonly ImageService _imageService;
-        private Random _rnd = new();
+    private Random _rnd = new();
 
     public ImageController(ImageService imageService)
     {
@@ -15,22 +13,19 @@ namespace JsExerciseAPI.Controllers
     }
 
 
-        [HttpGet("{id}")]
-        public ActionResult GetImage(int id)
-        {
-            if (!Enumerable.Range(1, _imageUrls.Length).Contains(id)) return NotFound();
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Image>> GetImage(int id)
+    {
+        if (!Enumerable.Range(1, _imageService.ImageUrls.Length).Contains(id)) return NotFound();
 
-            return Ok(new { url = _imageUrls[(int)id - 1] });
-        }
+        return Ok(await _imageService.GetImage(id));
+    }
 
-        [HttpGet("{id}/throttle")]
-        public ActionResult GetImageThrottled(int id)
-        {
-            Thread.Sleep(_rnd.Next(2, 10) * 1000);
+    [HttpGet("{id}/throttle")]
+    public async Task<ActionResult<Image>> GetImageThrottled(int id)
+    {
+        Thread.Sleep(_rnd.Next(2, 10) * 1000);
 
-            return GetImage(id);
-        }
-
-
+        return await GetImage(id);
     }
 }
