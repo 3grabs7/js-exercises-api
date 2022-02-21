@@ -2,40 +2,62 @@
 namespace JsExerciseAPI.Services;
 public class ImageService
 {
-    public string[] ImageUrls = new string[]
+    private List<string> _imageUrls = new()
     {
         "https://img-9gag-fun.9cache.com/photo/a3Q5VW5_460s.jpg",
         "https://media.moddb.com/images/members/5/4550/4549205/duck.jpg",
         "https://www.kibrispdr.org/dwn/5/random-pic.jpg"
     };
 
-    public async Task<Image> GetImage(int id)
+    public int ImageCount => _imageUrls.Count;
+
+    public async Task<Image?> GetImage(int id)
     {
-        Image img = new();
-        img.Url = ImageUrls[id - 1];
-        img.Metadata = await GetMetadata(img.Url);
+        var inRange = 1 <= id && id < _imageUrls.Count;
+        if (!inRange) return null;
+
+        var url = _imageUrls[id - 1];
+
+        Image img = new()
+        {
+            Url = url,
+            Metadata = await GetMetadata(url)
+        };
 
         return img;
     }
 
-    async public Task<ImageMetadata> GetMetadata(string url)
+    private static async Task<ImageMetadata> GetMetadata(string url)
     {
         if (!OperatingSystem.IsOSPlatform("windows"))
             throw new HttpRequestException("Please buy windows", null, System.Net.HttpStatusCode.NotAcceptable);
 
         var response = await new HttpClient().GetAsync(url);
-        var stream = await response.Content.ReadAsStreamAsync();
+        await using var stream = await response.Content.ReadAsStreamAsync();
         var imageFromStream = System.Drawing.Image.FromStream(stream);
-        stream.Close();
-
-        var metadata = new ImageMetadata();
-        metadata.Width = imageFromStream.Width;
-        metadata.Height = imageFromStream.Height;
-        metadata.Size = FormatByteSize(response.Content.ReadAsByteArrayAsync().Result.Length);
+        
+        var metadata = new ImageMetadata
+        {
+            Width = imageFromStream.Width,
+            Height = imageFromStream.Height,
+            Size = FormatByteSize(response.Content.Headers.ContentLength?? 0)
+        };
 
         return metadata;
     }
 
-    private string FormatByteSize(long size) => String.Format("{0:#,###} bytes", size);
+    private static string FormatByteSize(long size) => $"{size:#,###} bytes";
 
+    public async Task<Image?> AddImage(string url)
+    {
+        Image img = new()
+        {
+            Url = url,
+            Metadata = await GetMetadata(url)
+        };
+
+        _imageUrls.Add(url);
+
+        return img;
+    }
 }
