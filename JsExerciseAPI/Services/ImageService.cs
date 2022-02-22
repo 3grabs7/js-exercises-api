@@ -14,7 +14,7 @@ public class ImageService
 
     public async Task<Image?> GetImage(int id)
     {
-        var inRange = 1 <= id && id < _imageUrls.Count;
+        var inRange = 1 <= id && id <= _imageUrls.Count;
         if (!inRange) return null;
 
         var url = _imageUrls[id - 1];
