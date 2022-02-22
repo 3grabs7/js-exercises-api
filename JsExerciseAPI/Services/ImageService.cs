@@ -6,7 +6,8 @@ public class ImageService
     {
         "https://img-9gag-fun.9cache.com/photo/a3Q5VW5_460s.jpg",
         "https://media.moddb.com/images/members/5/4550/4549205/duck.jpg",
-        "https://www.kibrispdr.org/dwn/5/random-pic.jpg"
+        "https://www.kibrispdr.org/dwn/5/random-pic.jpg",
+        "https://www.deke.com/files/images/Dekes-Techniques-061-duck-wears-dog-mask.jpg"
     };
 
     public int ImageCount => _imageUrls.Count;
