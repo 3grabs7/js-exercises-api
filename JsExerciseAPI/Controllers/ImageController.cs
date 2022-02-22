@@ -44,12 +44,12 @@ public class ImageController : ControllerBase
     /// <summary>
     /// Lägger till en ny bild till tjänsten
     /// </summary>
-    /// <param name="url"> url till den nya bilden </param>
+    /// <param name="url">den nya url:en</param>
     /// <returns></returns>
     [HttpPost()]
     public async Task<ActionResult<Image>> PostImage(string url)
     {
-        var imageLocation = $"api/image/{_imageService.ImageCount}";
+        var imageLocation = $"api/image/{_imageService.ImageCount+1}";
         var newImage = await _imageService.AddImage(url);
 
         return new CreatedResult(imageLocation, newImage);
